@@ -1,0 +1,106 @@
+╔═══════════════════════════════════════════════════════════════╗
+║   PROGRESS CALENDAR BACKEND - QUICK START                     ║
+╚═══════════════════════════════════════════════════════════════╝
+
+📦 BACKEND CREADO EN:
+/home/alf/Desktop/progress-calendar-backend/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 PASO 1: INSTALAR DEPENDENCIAS
+
+cd /home/alf/Desktop/progress-calendar-backend
+npm install
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🏃 PASO 2: INICIAR EL SERVIDOR
+
+npm start
+
+Deberías ver:
+🚀 Servidor corriendo en http://localhost:3000
+📊 API Key configurada: Sí
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 PASO 3: PROBAR QUE FUNCIONA
+
+En OTRA terminal, ejecuta:
+
+curl http://localhost:3000/health
+
+Debería devolver:
+{"status":"ok","timestamp":"..."}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 PASO 4: GENERAR TU PRIMERA META
+
+curl -X POST http://localhost:3000/api/generate-goal \
+  -H "Content-Type: application/json" \
+  -d '{"goal": "estar fit"}'
+
+Verás un JSON con:
+- Plan de entrenamiento
+- Frecuencia semanal
+- Hitos a alcanzar
+- Consejos prácticos
+- % de éxito estimado
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📡 ENDPOINTS DISPONIBLES:
+
+GET  http://localhost:3000/           Info de la API
+GET  http://localhost:3000/health     Health check
+POST http://localhost:3000/api/generate-goal   Generar meta
+POST http://localhost:3000/api/chat   Chat con AI
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 EJEMPLOS DE METAS:
+
+"estar fit"
+"leer más libros"
+"aprender inglés"
+"correr un 5k"
+"meditar diariamente"
+"despertar temprano"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 MÁS INFO:
+
+README.md    - Documentación completa
+SETUP.md     - Guía detallada de setup
+RESUMEN.md   - Resumen del proyecto
+examples.json - Ejemplos de requests/responses
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔑 API KEY:
+
+Ya configurada en .env:
+AIzaSyDjqSl1g6kvDS-lbMv-Tq20RtTGaNfqnl0
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ CHECKLIST:
+
+[ ] npm install ejecutado
+[ ] npm start funciona
+[ ] Health check responde
+[ ] Generate goal funciona
+[ ] JSON válido recibido
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🛑 DETENER SERVIDOR:
+
+Ctrl + C
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+¡LISTO! El backend está completo y funcional.
+Próximo paso: Integrar con la app Android cuando estés listo.

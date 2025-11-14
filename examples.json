@@ -1,0 +1,94 @@
+{
+  "ejemplos_de_metas": [
+    {
+      "categoria": "Fitness",
+      "metas": [
+        "estar fit",
+        "perder peso",
+        "ganar músculo",
+        "correr un 5k",
+        "hacer yoga diariamente"
+      ]
+    },
+    {
+      "categoria": "Aprendizaje",
+      "metas": [
+        "aprender inglés",
+        "aprender programación",
+        "tocar guitarra",
+        "aprender a cocinar",
+        "estudiar diseño"
+      ]
+    },
+    {
+      "categoria": "Productividad",
+      "metas": [
+        "leer más libros",
+        "meditar diariamente",
+        "despertar temprano",
+        "escribir un diario",
+        "organizar mi tiempo"
+      ]
+    },
+    {
+      "categoria": "Finanzas",
+      "metas": [
+        "ahorrar dinero",
+        "aprender sobre inversiones",
+        "reducir gastos innecesarios",
+        "crear presupuesto mensual"
+      ]
+    }
+  ],
+  "ejemplo_request": {
+    "url": "http://localhost:3000/api/generate-goal",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "goal": "estar fit",
+      "userContext": "Tengo 30 años, nunca he ido al gym, quiero empezar de cero"
+    }
+  },
+  "ejemplo_response": {
+    "success": true,
+    "goal": {
+      "goalTitle": "Estar Fit - Plan Principiante",
+      "description": "Programa de fitness para comenzar desde cero y crear hábitos saludables",
+      "frequency": {
+        "type": "weekly",
+        "times": 4,
+        "unit": "días"
+      },
+      "plan": {
+        "weekly": 4,
+        "duration": 45,
+        "restDays": 3
+      },
+      "milestones": [
+        {
+          "week": 4,
+          "description": "Completar primer mes sin faltar a ninguna sesión"
+        },
+        {
+          "week": 8,
+          "description": "Notar mejora significativa en resistencia y energía"
+        },
+        {
+          "week": 12,
+          "description": "Establecer el gimnasio como rutina habitual"
+        }
+      ],
+      "tips": [
+        "Empieza con ejercicios básicos y aumenta gradualmente",
+        "Mantente bien hidratado antes, durante y después",
+        "Descansa lo suficiente entre sesiones",
+        "No te compares con otros, enfócate en tu progreso",
+        "Celebra cada pequeño logro"
+      ],
+      "estimatedSuccess": 75
+    },
+    "timestamp": "2025-11-14T10:30:00.000Z"
+  }
+}
