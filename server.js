@@ -67,7 +67,8 @@ Responde ÚNICAMENTE en formato JSON con esta estructura exacta:
   "plan": {
     "weekly": número de días por semana (ej: 4),
     "duration": duración en minutos por sesión (ej: 45),
-    "restDays": días de descanso recomendados (ej: 3)
+    "restDays": días de descanso recomendados (ej: 3),
+    "recommendedDays": ["lunes", "martes", "jueves", "viernes"] // Array con nombres de días en español
   },
   "milestones": [
     { "week": 4, "description": "Primer hito alcanzable" },
