@@ -58,6 +58,7 @@ Responde ÚNICAMENTE en formato JSON con esta estructura exacta:
 
 {
   "goalTitle": "Título claro de la meta (máx 50 caracteres)",
+  "shortName": "Nombre muy corto para el calendario (máx 12 caracteres, SIN emoji, ej: 'Lectura', 'Gym', 'Correr', 'Yoga')",
   "description": "Descripción motivadora (máx 150 caracteres)",
   "emoji": "UN SOLO emoji que represente esta meta (ej: 📚 para leer, 💪 para gym, 🏃 para correr, 🎨 para arte, 🧘 para yoga, etc)",
   "frequency": {
