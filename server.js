@@ -35,10 +35,50 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Language configurations
+const languageConfig = {
+  es: {
+    name: 'Spanish',
+    days: ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'],
+    instruction: 'Responde ÚNICAMENTE en ESPAÑOL',
+    examples: '- "estar fit" → 4 días/semana gym, 45min sesiones\n- "leer más" → 20min diarios, 1 libro/mes\n- "aprender inglés" → 30min diarios, práctica conversacional 2x/semana'
+  },
+  en: {
+    name: 'English',
+    days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
+    instruction: 'Respond ONLY in ENGLISH',
+    examples: '- "get fit" → 4 days/week gym, 45min sessions\n- "read more" → 20min daily, 1 book/month\n- "learn Spanish" → 30min daily, conversation practice 2x/week'
+  },
+  fr: {
+    name: 'French',
+    days: ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'],
+    instruction: 'Répondez UNIQUEMENT en FRANÇAIS',
+    examples: '- "être en forme" → 4 jours/semaine gym, 45min sessions\n- "lire plus" → 20min quotidien, 1 livre/mois\n- "apprendre l\'anglais" → 30min quotidien, pratique conversation 2x/semaine'
+  },
+  pt: {
+    name: 'Portuguese',
+    days: ['segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado', 'domingo'],
+    instruction: 'Responda APENAS em PORTUGUÊS',
+    examples: '- "ficar em forma" → 4 dias/semana academia, 45min sessões\n- "ler mais" → 20min diários, 1 livro/mês\n- "aprender inglês" → 30min diários, prática conversação 2x/semana'
+  },
+  it: {
+    name: 'Italian',
+    days: ['lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato', 'domenica'],
+    instruction: 'Rispondi SOLO in ITALIANO',
+    examples: '- "mettersi in forma" → 4 giorni/settimana palestra, 45min sessioni\n- "leggere di più" → 20min giornalieri, 1 libro/mese\n- "imparare inglese" → 30min giornalieri, pratica conversazione 2x/settimana'
+  },
+  de: {
+    name: 'German',
+    days: ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag', 'samstag', 'sonntag'],
+    instruction: 'Antworten Sie NUR auf DEUTSCH',
+    examples: '- "fit werden" → 4 Tage/Woche Fitnessstudio, 45min Sitzungen\n- "mehr lesen" → 20min täglich, 1 Buch/Monat\n- "Englisch lernen" → 30min täglich, Konversationspraxis 2x/Woche'
+  }
+};
+
 // Endpoint para generar metas con AI
 app.post('/api/generate-goal', async (req, res) => {
   try {
-    const { goal, userContext } = req.body;
+    const { goal, userContext, language = 'es' } = req.body;
 
     if (!goal) {
       return res.status(400).json({
@@ -46,51 +86,55 @@ app.post('/api/generate-goal', async (req, res) => {
       });
     }
 
+    // Get language configuration
+    const langConfig = languageConfig[language] || languageConfig['es'];
+    const daysArray = JSON.stringify(langConfig.days);
+
     // Prompt estructurado para generar plan de meta
     const prompt = `
-Eres un asistente experto en planificación de metas personales.
-Un usuario quiere: "${goal}"
+You are an expert assistant in personal goal planning.
+${langConfig.instruction}
 
-${userContext ? `Contexto adicional: ${userContext}` : ''}
+A user wants: "${goal}"
 
-Genera un plan REALISTA y ACCIONABLE para el resto del año.
-Responde ÚNICAMENTE en formato JSON con esta estructura exacta:
+${userContext ? `Additional context: ${userContext}` : ''}
+
+Generate a REALISTIC and ACTIONABLE plan for the rest of the year.
+Respond ONLY in JSON format with this exact structure:
 
 {
-  "goalTitle": "Título claro de la meta (máx 50 caracteres)",
-  "shortName": "Nombre muy corto para el calendario (máx 12 caracteres, SIN emoji, ej: 'Lectura', 'Gym', 'Correr', 'Yoga')",
-  "description": "Descripción motivadora (máx 150 caracteres)",
-  "emoji": "UN SOLO emoji que represente esta meta (ej: 📚 para leer, 💪 para gym, 🏃 para correr, 🎨 para arte, 🧘 para yoga, etc)",
+  "goalTitle": "Clear goal title (max 50 characters) IN ${langConfig.name.toUpperCase()}",
+  "shortName": "Very short name for calendar (max 12 characters, NO emoji, e.g: 'Reading', 'Gym', 'Running', 'Yoga') IN ${langConfig.name.toUpperCase()}",
+  "description": "Motivational description (max 150 characters) IN ${langConfig.name.toUpperCase()}",
+  "emoji": "ONE SINGLE emoji representing this goal (e.g: 📚 for reading, 💪 for gym, 🏃 for running, 🎨 for art, 🧘 for yoga, etc)",
   "frequency": {
-    "type": "weekly" o "daily" o "monthly",
-    "times": número de veces,
-    "unit": "días", "veces", "horas", etc
+    "type": "weekly" or "daily" or "monthly",
+    "times": number of times,
+    "unit": "days", "times", "hours", etc IN ${langConfig.name.toUpperCase()}
   },
   "plan": {
-    "weekly": número de días por semana (ej: 4),
-    "duration": duración en minutos por sesión (ej: 45),
-    "restDays": días de descanso recomendados (ej: 3),
-    "recommendedDays": ["lunes", "martes", "jueves", "viernes"] // Array con nombres de días en español
+    "weekly": number of days per week (e.g: 4),
+    "duration": duration in minutes per session (e.g: 45),
+    "restDays": recommended rest days (e.g: 3),
+    "recommendedDays": Array with day names from this list ONLY: ${daysArray}
   },
   "milestones": [
-    { "week": 4, "description": "Primer hito alcanzable" },
-    { "week": 8, "description": "Segundo hito" },
-    { "week": 12, "description": "Tercer hito" }
+    { "week": 4, "description": "First achievable milestone IN ${langConfig.name.toUpperCase()}" },
+    { "week": 8, "description": "Second milestone IN ${langConfig.name.toUpperCase()}" },
+    { "week": 12, "description": "Third milestone IN ${langConfig.name.toUpperCase()}" }
   ],
   "tips": [
-    "Consejo práctico 1",
-    "Consejo práctico 2",
-    "Consejo práctico 3"
+    "Practical tip 1 IN ${langConfig.name.toUpperCase()}",
+    "Practical tip 2 IN ${langConfig.name.toUpperCase()}",
+    "Practical tip 3 IN ${langConfig.name.toUpperCase()}"
   ],
-  "estimatedSuccess": número entre 0-100 representando probabilidad de éxito
+  "estimatedSuccess": number between 0-100 representing success probability
 }
 
-Ejemplos:
-- "estar fit" → 4 días/semana gym, 45min sesiones
-- "leer más" → 20min diarios, 1 libro/mes
-- "aprender inglés" → 30min diarios, práctica conversacional 2x/semana
+Examples in ${langConfig.name}:
+${langConfig.examples}
 
-Sé específico, realista y motivador.
+Be specific, realistic and motivational. ALL TEXT FIELDS MUST BE IN ${langConfig.name.toUpperCase()}.
 `;
 
     // Llamar a Gemini
