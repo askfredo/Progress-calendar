@@ -36,40 +36,37 @@ app.get('/health', (req, res) => {
 });
 
 // Language configurations
+// IMPORTANT: recommendedDays ALWAYS uses Spanish day names (frontend expects them)
+const SPANISH_DAYS = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+
 const languageConfig = {
   es: {
     name: 'Spanish',
-    days: ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'],
     instruction: 'Responde ÚNICAMENTE en ESPAÑOL',
     examples: '- "estar fit" → 4 días/semana gym, 45min sesiones\n- "leer más" → 20min diarios, 1 libro/mes\n- "aprender inglés" → 30min diarios, práctica conversacional 2x/semana'
   },
   en: {
     name: 'English',
-    days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
     instruction: 'Respond ONLY in ENGLISH',
     examples: '- "get fit" → 4 days/week gym, 45min sessions\n- "read more" → 20min daily, 1 book/month\n- "learn Spanish" → 30min daily, conversation practice 2x/week'
   },
   fr: {
     name: 'French',
-    days: ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'],
     instruction: 'Répondez UNIQUEMENT en FRANÇAIS',
     examples: '- "être en forme" → 4 jours/semaine gym, 45min sessions\n- "lire plus" → 20min quotidien, 1 livre/mois\n- "apprendre l\'anglais" → 30min quotidien, pratique conversation 2x/semaine'
   },
   pt: {
     name: 'Portuguese',
-    days: ['segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado', 'domingo'],
     instruction: 'Responda APENAS em PORTUGUÊS',
     examples: '- "ficar em forma" → 4 dias/semana academia, 45min sessões\n- "ler mais" → 20min diários, 1 livro/mês\n- "aprender inglês" → 30min diários, prática conversação 2x/semana'
   },
   it: {
     name: 'Italian',
-    days: ['lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato', 'domenica'],
     instruction: 'Rispondi SOLO in ITALIANO',
     examples: '- "mettersi in forma" → 4 giorni/settimana palestra, 45min sessioni\n- "leggere di più" → 20min giornalieri, 1 libro/mese\n- "imparare inglese" → 30min giornalieri, pratica conversazione 2x/settimana'
   },
   de: {
     name: 'German',
-    days: ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag', 'samstag', 'sonntag'],
     instruction: 'Antworten Sie NUR auf DEUTSCH',
     examples: '- "fit werden" → 4 Tage/Woche Fitnessstudio, 45min Sitzungen\n- "mehr lesen" → 20min täglich, 1 Buch/Monat\n- "Englisch lernen" → 30min täglich, Konversationspraxis 2x/Woche'
   }
@@ -88,7 +85,7 @@ app.post('/api/generate-goal', async (req, res) => {
 
     // Get language configuration
     const langConfig = languageConfig[language] || languageConfig['es'];
-    const daysArray = JSON.stringify(langConfig.days);
+    const daysArray = JSON.stringify(SPANISH_DAYS);
 
     // Prompt estructurado para generar plan de meta
     const prompt = `
@@ -116,7 +113,7 @@ Respond ONLY in JSON format with this exact structure:
     "weekly": number of days per week (e.g: 4),
     "duration": duration in minutes per session (e.g: 45),
     "restDays": recommended rest days (e.g: 3),
-    "recommendedDays": Array with day names from this list ONLY: ${daysArray}
+    "recommendedDays": Array with day names IN SPANISH from this list ONLY: ${daysArray}
   },
   "milestones": [
     { "week": 4, "description": "First achievable milestone IN ${langConfig.name.toUpperCase()}" },
