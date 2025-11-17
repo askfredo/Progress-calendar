@@ -113,7 +113,7 @@ Respond ONLY in JSON format with this exact structure:
     "weekly": number of days per week (e.g: 4),
     "duration": duration in minutes per session (e.g: 45),
     "restDays": recommended rest days (e.g: 3),
-    "recommendedDays": Array with day names IN SPANISH from this list ONLY: ${daysArray}
+    "recommendedDays": Array with EXACTLY these Spanish day names ONLY: ${daysArray}
   },
   "milestones": [
     { "week": 4, "description": "First achievable milestone IN ${langConfig.name.toUpperCase()}" },
@@ -128,10 +128,14 @@ Respond ONLY in JSON format with this exact structure:
   "estimatedSuccess": number between 0-100 representing success probability
 }
 
+CRITICAL: The "recommendedDays" field MUST contain ONLY Spanish day names from this exact list: ${daysArray}
+Do NOT translate day names. Use ONLY: lunes, martes, miércoles, jueves, viernes, sábado, domingo.
+Example: "recommendedDays": ["lunes", "miércoles", "viernes", "domingo"]
+
 Examples in ${langConfig.name}:
 ${langConfig.examples}
 
-Be specific, realistic and motivational. ALL TEXT FIELDS MUST BE IN ${langConfig.name.toUpperCase()}.
+Be specific, realistic and motivational. ALL TEXT FIELDS MUST BE IN ${langConfig.name.toUpperCase()}, EXCEPT "recommendedDays" which must ALWAYS be in Spanish.
 `;
 
     // Llamar a Gemini
@@ -155,6 +159,70 @@ Be specific, realistic and motivational. ALL TEXT FIELDS MUST BE IN ${langConfig
         error: 'Error al procesar respuesta de AI',
         rawResponse: text
       });
+    }
+
+    // VALIDATION: Ensure recommendedDays always uses Spanish day names
+    // This is critical for streak calculations in the frontend
+    if (jsonResponse.plan && jsonResponse.plan.recommendedDays) {
+      const dayTranslations = {
+        // English
+        'monday': 'lunes',
+        'tuesday': 'martes',
+        'wednesday': 'miércoles',
+        'thursday': 'jueves',
+        'friday': 'viernes',
+        'saturday': 'sábado',
+        'sunday': 'domingo',
+        // French
+        'lundi': 'lunes',
+        'mardi': 'martes',
+        'mercredi': 'miércoles',
+        'jeudi': 'jueves',
+        'vendredi': 'viernes',
+        'samedi': 'sábado',
+        'dimanche': 'domingo',
+        // Portuguese
+        'segunda': 'lunes',
+        'segunda-feira': 'lunes',
+        'terça': 'martes',
+        'terça-feira': 'martes',
+        'quarta': 'miércoles',
+        'quarta-feira': 'miércoles',
+        'quinta': 'jueves',
+        'quinta-feira': 'jueves',
+        'sexta': 'viernes',
+        'sexta-feira': 'viernes',
+        'sábado': 'sábado',
+        'domingo': 'domingo',
+        // Italian
+        'lunedì': 'lunes',
+        'martedì': 'martes',
+        'mercoledì': 'miércoles',
+        'giovedì': 'jueves',
+        'venerdì': 'viernes',
+        'sabato': 'sábado',
+        'domenica': 'domingo',
+        // German
+        'montag': 'lunes',
+        'dienstag': 'martes',
+        'mittwoch': 'miércoles',
+        'donnerstag': 'jueves',
+        'freitag': 'viernes',
+        'samstag': 'sábado',
+        'sonntag': 'domingo'
+      };
+
+      // Normalize recommendedDays to Spanish
+      jsonResponse.plan.recommendedDays = jsonResponse.plan.recommendedDays.map(day => {
+        const normalizedDay = day.toLowerCase().trim();
+        return dayTranslations[normalizedDay] || day;
+      });
+
+      // Validate all days are in Spanish
+      const validSpanishDays = SPANISH_DAYS;
+      jsonResponse.plan.recommendedDays = jsonResponse.plan.recommendedDays.filter(day =>
+        validSpanishDays.includes(day)
+      );
     }
 
     // Responder con el plan generado
